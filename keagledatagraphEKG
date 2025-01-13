@@ -1,0 +1,27 @@
+import pandas as pd
+import neurokit2 as nk
+import matplotlib.pyplot as plt
+import numpy as np
+
+# guys use your own path here - download the csv from https://www.kaggle.com/datasets/shayanfazeli/heartbeat
+data_path = r"C:\Users\arnav\OneDrive\Documents\mitbih_test.csv"
+data = pd.read_csv(data_path, header=None) 
+
+
+# using the first columns data for now
+ecg_data = data.iloc[:, 0]  
+
+# Cleaning the data
+ecg_data = ecg_data.dropna()
+
+ecg_data = pd.to_numeric(ecg_data, errors='coerce')
+
+ecg_data = ecg_data.dropna()
+ecg_data = (ecg_data - np.min(ecg_data)) / (np.max(ecg_data) - np.min(ecg_data))
+
+# Processing the ECG data with NeuroKit2
+signals, info = nk.ecg_process(ecg_data, sampling_rate=360)  # Adjust sampling_rate based on your dataset.
+
+# Plotting the processed ECG signal
+nk.ecg_plot(signals)
+plt.show()
